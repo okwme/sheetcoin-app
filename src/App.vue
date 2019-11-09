@@ -2,11 +2,32 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link to="/deposit">Deposit</router-link> |
+      <a href="#" class="router-link-active" @click.prevent="connect">{{connected ? 'Connected' : 'Connect'}}</a>
     </div>
     <router-view/>
   </div>
 </template>
+<script>
+import {mapState} from 'vuex'
+export default {
+  name: 'app',
+  data() {
+    return {
+      foo: 'bar'
+    }
+  },
+  methods: {
+    connect() {
+      if (this.connected) return
+      global.web3Connect.toggleModal(); // open modal on button click
+    }
+  },
+  computed: {
+    ...mapState(['connected'])
+  }
+}
+  </script>
 
 <style>
 #app {
