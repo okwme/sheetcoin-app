@@ -77,7 +77,7 @@ global.web3Connect.on("connect", async (provider) => {
   }
   store.commit('connected', true)
   setTimeout(() => {
-    store.dispatch('getEthBalance')
+    store.dispatch('initialize')
   }, 1000)
 });
 

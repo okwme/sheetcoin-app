@@ -1,4 +1,4 @@
-function getTransactionReceiptMined(txnHash, interval) {
+export function getTransactionReceiptMined(txnHash, interval) {
     var transactionReceiptAsync;
     interval = interval ? interval : 500;
     transactionReceiptAsync = function(txnHash, resolve, reject) {
@@ -27,5 +27,5 @@ function getTransactionReceiptMined(txnHash, interval) {
                 transactionReceiptAsync(txnHash, resolve, reject);
             });
     }
-};
-module.exports = {getTransactionReceiptMined}
+}
+// module.exports = getTransactionReceiptMined

@@ -5,6 +5,19 @@
       <router-link to="/deposit">Deposit</router-link> |
       <a href="#" class="router-link-active" @click.prevent="connect">{{connected ? 'Connected' : 'Connect'}}</a>
     </div>
+    <div>
+      <h2>Balance on Ethereum</h2>
+      <div v-if="!connected">Please Connect</div>
+      <div v-else-if="!ethBalanceLoading">{{ethBalance}}</div>
+      <div v-else>loading...</div>
+    </div>
+    <div>
+      <h2>Balance on Google Sheets</h2>
+      <div v-if="!connected">Please Connect</div>
+      <div v-else-if="!sheetBalanceLoading">{{googleBalance}}</div>
+      <div v-else>loading...</div>
+    </div>
+    <hr>
     <router-view/>
   </div>
 </template>
@@ -24,7 +37,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['connected'])
+    ...mapState(['connected', 'ethBalance', 'googleBalance', 'ethBalanceLoading', 'sheetBalanceLoading'])
   }
 }
   </script>

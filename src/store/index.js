@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-// import {getTransactionReceiptMined} from '../assets/utils'
+import {getTransactionReceiptMined}from '../assets/utils'
 Vue.use(Vuex)
 
 import * as contracts from 'sheetcoin'
@@ -8,6 +8,7 @@ console.log({contracts})
 
 export default new Vuex.Store({
   state: {
+    loading: false,
     account: null,
     connected: false,
     networkId: false,
@@ -24,13 +25,13 @@ export default new Vuex.Store({
       state.connected = connected
     },
     updateEthBalance (state, ethBalance) {
-      state.ethBalance = ethBalance
+      state.ethBalance = parseInt(ethBalance)
     },
     updateEthBalanceLoading (state, ethBalanceLoading) {
       state.ethBalanceLoading = ethBalanceLoading
     },
     updateAllowed (state, allowed) {
-      state.allowed = allowed
+      state.allowed = parseInt(allowed)
     },
     updateNetworkId (state, networkId) {
       state.networkId = networkId
@@ -42,29 +43,59 @@ export default new Vuex.Store({
       state.sheetcoinInstance = instance
     },
     updateSheetcoinControllerInstance (state, instance) {
+      console.log('update sheetcoinControllerInstance')
       state.sheetcoinControllerInstance = instance
+    },
+    updateLoading (state, loading) {
+      state.loading = loading
     }
   },
   actions: {
 
-    async depositAction({state, dispatch}, depositAmount) {
-      var tx
-      if (depositAmount > state.allowed) {
-        const difference = depositAmount - state.Allowed
+    async depositAction({state, dispatch, commit}, {deposit, email}) {
+      deposit = parseInt(deposit)
+      console.log(deposit, state.allowed)
+      var tx, receipt
+      if (deposit > state.allowed) {
+        const difference = deposit - state.allowed
         console.log({difference})
-        tx = await state.sheetcoinInstance.methods.increaseAllowance(state.sheetcoinController.address, difference)
+        console.log(state.account)
+        console.log(state.sheetcoinControllerInstance, state.sheetcoinControllerInstance._address)
+        tx = await state.sheetcoinInstance.methods.increaseAllowance(state.sheetcoinControllerInstance._address, difference).send({
+          from: state.account
+        })
         console.log({tx})
-        // await getTransactionReceiptMined(tx)
+        commit('updateLoading', true)
+        receipt = await getTransactionReceiptMined(tx.transactionHash, 100)
+        commit('updateLoading', false)
       }
+      console.log({deposit, email})
+      tx = await state.sheetcoinControllerInstance.methods.deposit(deposit.toString(10), email).send({
+        from: state.account
+      })
+
+      commit('updateLoading', true)
+      receipt = await getTransactionReceiptMined(tx.transactionHash, 100)
+      commit('updateLoading', false)
+
       console.log({tx})
+      console.log({receipt})
       await dispatch('getAllowed')
+      await dispatch('getEthBalance')
     },
     async getAllowed ({state, commit}) {
       const allowed = await state.sheetcoinInstance.methods.allowance(state.account, contracts['SheetcoinController'].networks[state.networkId].address).call()
       console.log({allowed})
-      commit('updateAllowed', parseInt(allowed))
+      commit('updateAllowed', allowed)
     },
-    async getEthBalance({commit, dispatch}) {
+    async getEthBalance ({state, commit}) {
+      commit('updateEthBalanceLoading', true)
+      const balance = await state.sheetcoinInstance.methods.balanceOf(state.account).call()
+      console.log({balance})
+      commit('updateEthBalance', balance)
+      commit('updateEthBalanceLoading', false)
+    },
+    async initialize({commit, dispatch}) {
       const networkId = await global.web3.eth.net.getId()
       console.log({networkId})
       commit('updateNetworkId', networkId)
@@ -86,10 +117,7 @@ export default new Vuex.Store({
       console.log({account})
       commit('updateAccount', account)
 
-      const balance = await sheetcoinInstance.methods.balanceOf(account).call()
-      console.log({balance})
-      commit('updateEthBalance', parseInt(balance))
-      commit('updateEthBalanceLoading', false)
+      await dispatch('getEthBalance')
       await dispatch('getAllowed')
     }
   },
