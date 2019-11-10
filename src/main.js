@@ -11,14 +11,15 @@ import Fortmatic from "fortmatic";
 import Torus from "@toruslabs/torus-embed";
 // import Arkane from "@arkane-network/web3-arkane-provider";
 // import Authereum from "authereum";
-
+const FORTMATIC = 'pk_test_903ADB93FD8F027E'
+const INFURA = '526b528ee356459a9bdd3a732d8edf71'
 global.web3Connect = new Web3Connect.Core({
-  network: "mainnet", // optional
+  network: "rinkeby", // optional
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider, // required
       options: {
-        infuraId: process.env.INFURA // required
+        infuraId: INFURA // required
       }
     },
     // portis: {
@@ -30,7 +31,7 @@ global.web3Connect = new Web3Connect.Core({
     fortmatic: {
       package: Fortmatic, // required
       options: {
-        key: process.env.FORTMATIC // required
+        key: FORTMATIC // required
       }
     },
     // squarelink: {
@@ -42,9 +43,14 @@ global.web3Connect = new Web3Connect.Core({
     torus: {
       package: Torus, // required
       options: {
+        // network: {
+        //   host: 'rinkeby', // default: mainnet
+        //   chainId: 4, // default: 1
+        //   networkName: 'Rinkeby Test Network' // default: Main Ethereum Network
+        // },
         enableLogging: false, // optional
         buttonPosition: "bottom-left", // optional
-        buildEnv: "production", // optional
+        // buildEnv: "development", // optional
         showTorusButton: true, // optional
         enabledVerifiers: { // optional
           google: false // optional
@@ -66,6 +72,7 @@ global.web3Connect = new Web3Connect.Core({
 
 // subscribe to connect
 global.web3Connect.on("connect", async (provider) => {
+  console.log('connect')
   global.web3 = new Web3(provider); // add provider to web3
   if (global.ethereum) {
     console.log('yes global ethereum')
