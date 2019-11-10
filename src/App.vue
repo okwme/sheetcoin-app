@@ -5,17 +5,19 @@
       <router-link to="/deposit">Deposit</router-link> |
       <a href="#" class="router-link-active" @click.prevent="connect">{{connected ? 'Connected' : 'Connect'}}</a>
     </div>
-    <div>
-      <h2>Balance on Ethereum</h2>
-      <div v-if="!connected">Please Connect</div>
-      <div v-else-if="!ethBalanceLoading">{{ethBalance}}</div>
-      <div v-else>loading...</div>
-    </div>
-    <div>
-      <h2>Balance on Google Sheets</h2>
-      <div v-if="!connected">Please Connect</div>
-      <div v-else-if="!sheetBalanceLoading">{{googleBalance}}</div>
-      <div v-else>loading...</div>
+    <div class="flex">
+      <div>
+        <h2>Balance on Ethereum</h2>
+        <div v-if="!connected">N/A</div>
+        <div v-else-if="!ethBalanceLoading">{{ethBalance}}</div>
+        <div v-else>loading...</div>
+      </div>
+      <div>
+        <h2>Balance on Google Sheets</h2>
+        <div v-if="!connected">N/A</div>
+        <div v-else-if="!sheetBalanceLoading">{{googleBalance}}</div>
+        <div v-else>loading...</div>
+      </div>
     </div>
     <hr>
     <router-view/>
@@ -43,6 +45,10 @@ export default {
   </script>
 
 <style>
+.flex {
+  display: flex;
+  justify-content: space-evenly;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

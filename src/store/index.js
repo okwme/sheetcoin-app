@@ -9,6 +9,7 @@ console.log({contracts})
 export default new Vuex.Store({
   state: {
     loading: false,
+    loadingMsg: null,
     account: null,
     connected: false,
     networkId: false,
@@ -48,6 +49,9 @@ export default new Vuex.Store({
     },
     updateLoading (state, loading) {
       state.loading = loading
+    },
+    updateLoadingMsg (state, loadingMsg) {
+      state.loadingMsg = loadingMsg
     }
   },
   actions: {
@@ -66,8 +70,10 @@ export default new Vuex.Store({
         })
         console.log({tx})
         commit('updateLoading', true)
+        commit('updateLoadingMsg', 'Enabling Sheetcoin to hold your sheet')
         receipt = await getTransactionReceiptMined(tx.transactionHash, 100)
         commit('updateLoading', false)
+        commit('updateLoadingMsg', null)
       }
       console.log({deposit, email})
       tx = await state.sheetcoinControllerInstance.methods.deposit(deposit.toString(10), email).send({
@@ -75,8 +81,10 @@ export default new Vuex.Store({
       })
 
       commit('updateLoading', true)
+      commit('updateLoadingMsg', 'Moving your Sheetcoin to Google Sheets')
       receipt = await getTransactionReceiptMined(tx.transactionHash, 100)
       commit('updateLoading', false)
+      commit('updateLoadingMsg', null)
 
       console.log({tx})
       console.log({receipt})
