@@ -9,6 +9,7 @@
   </div>
 </template>
 <script>
+import axios from 'axios'
 import { tokenForRecovery, parseToken, isHex } from '../assets/utils';
 import {mapState, mapActions} from 'vuex'
 export default {
@@ -20,7 +21,7 @@ export default {
         msg: 'Please Sign in with Google'
     }
   },
-  created () {
+  async created () {
     console.log(this.$route.query)
     var nonce = JSON.parse(JSON.stringify(this.$route.query))
     if (!nonce.amount || !nonce.sequence || !nonce.toAddress) {
@@ -28,8 +29,19 @@ export default {
         return
     }
 
+    let resp = await axios(`https://cindercloud.p.rapidapi.com/api/ethereum/ens/resolve/${nonce.toAddress}`, {
+      headers: {
+        "x-rapidapi-host": "cindercloud.p.rapidapi.com",
+        "x-rapidapi-key": "R0Kjpa08ZABn1jQCwBaJ2BPp7GC79In2"
+      }
+    })
+    if (resp.data.address !== '0x'.padEnd(42, '0')) {
+      console.log(resp.data)
+      nonce.toAddress = resp.data.address
+    }
+
     if (!isHex(nonce.toAddress)) {
-        this.error = (`invalid toAddress (${nonce.toAddress}), should be hexadecimal`)
+        this.error = (`invalid toAddress (${nonce.toAddress}), should be hexadecimal or an ENS name`)
         return
     }
 
