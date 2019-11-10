@@ -49,3 +49,8 @@ export function tokenForRecovery(token) {
         signature: '0x' + Buffer.from(signature, 'base64').toString('hex')
     }
 }
+
+export function isHex(h) {
+    var a = parseInt(h,16);
+    return (a.toString(16) === h)
+    }

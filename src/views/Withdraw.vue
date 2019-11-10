@@ -1,35 +1,43 @@
 <template>
-  <div class="send">
+  <div class="withdraw">
     <h2 class="red" v-if="error">{{error}}</h2>
     <template v-else>
         <h2>{{msg}}</h2>
-        <h3 v-if="!done">to send {{$route.query.amount}} Sheetcoin to {{$route.query.toAddress}}</h3>
+        <h3 v-if="!done">to withdraw {{$route.query.amount}} Sheetcoin to {{$route.query.toAddress}}</h3>
         <div v-if="!done" class="align-center" id="google-signin"></div>
     </template>
   </div>
 </template>
 <script>
-import { tokenForRecovery, parseToken } from '../assets/utils';
+import { tokenForRecovery, parseToken, isHex } from '../assets/utils';
 import {mapState, mapActions} from 'vuex'
 export default {
   name: 'send',
   data() {
     return {
+        error: null,
         done: false,
-        msg: 'Please Sign in with Google',
-        error: null
+        msg: 'Please Sign in with Google'
     }
   },
   created () {
     console.log(this.$route.query)
     var nonce = JSON.parse(JSON.stringify(this.$route.query))
-    if (!nonce.amount || !nonce.toAddress) {
-        this.error = `Invalid query params amount (${nonce.amount}) or toAddress (${nonce.toAddress})`
+    if (!nonce.amount || !nonce.nonce || !nonce.toAddress) {
+        this.error = `invalid query params amount (${nonce.amount}), nonce (${nonce.nonce}) or toAddress (${nonce.toAddress})`
         return
     }
-    nonce.amount = parseInt(nonce.amount)
+
+    if (!isHex(nonce.toAddress)) {
+        this.error = (`invalid toAddress (${nonce.toAddress}), should be hexadecimal`)
+        return
+    }
+
+    nonce.amount = nonce.amount.toString(16).padStart(64, '0')
+    nonce.nonce = nonce.nonce.toString(16).padStart(64, '0')
+    nonce = nonce.nonce + nonce.toAddress.replace('0x', '') + nonce.amount
     console.log({nonce})
-    nonce = btoa(JSON.stringify(nonce)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+    nonce = btoa(nonce).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
     console.log({nonce})
     gapi.load('auth2', () => {
         gapi.auth2.init({

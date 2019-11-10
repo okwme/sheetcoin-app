@@ -1,11 +1,11 @@
 <template>
   <div id="app">
-    <div id="nav">
+    <!-- <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/deposit">Deposit</router-link> |
       <a href="#" class="router-link-active" @click.prevent="connect">{{connected ? 'Connected' : 'Connect'}}</a>
-    </div>
-    <div class="flex">
+    </div> -->
+    <!-- <div class="flex">
       <div>
         <h2>Balance on Ethereum</h2>
         <div v-if="!connected">N/A</div>
@@ -19,7 +19,7 @@
         <div v-else>loading...</div>
       </div>
     </div>
-    <hr>
+    <hr> -->
     <router-view/>
   </div>
 </template>
@@ -68,5 +68,8 @@ export default {
 
 #nav a.router-link-exact-active {
   color: #42b983;
+}
+.red {
+  color: red;
 }
 </style>
