@@ -76,7 +76,7 @@ export default {
         // const { header, payload, signature } = tokenForRecovery(token);
         // console.log('Token:', parseToken(token));
         // console.log('Recovering identity:', {header}, {payload}, {signature});
-        fetch("https://enlvwnocovtw.x.pipedream.net", { // TODO: replace with sheets endpoint
+        fetch("https://script.google.com/macros/s/AKfycby2aArgZZ9x7kZhdJdgTuLZ5uqeA4kXQ6ZtNI1DR5_P4t5vJqE/exec", { // TODO: replace with sheets endpoint
             method: "POST",
             body: JSON.stringify({
                 token
@@ -87,6 +87,7 @@ export default {
             console.log({json})
             this.msg = "Thanks, you can return to Google Sheets now"
             this.done = true
+            window.close();
         })
     }
   }

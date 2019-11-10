@@ -91,6 +91,7 @@ export default {
             console.log({json})
             this.msg = "Thanks, you can return to Google Sheets now"
             this.done = true
+            window.close();
         })
     }
   }

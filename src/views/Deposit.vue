@@ -77,6 +77,7 @@ export default {
       var email = this.email
       await this.depositAction({deposit, email})
       this.done = true
+      window.close();
     }
   }
 }

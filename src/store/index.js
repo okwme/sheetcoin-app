@@ -88,7 +88,7 @@ export default new Vuex.Store({
         console.log(state.sheetcoinControllerInstance, state.sheetcoinControllerInstance._address)
 
         commit('updateLoading', true)
-        commit('updateLoadingMsg', 'Enabling Sheetcoin to hold your sheet')
+        commit('updateLoadingMsg', 'Allowing Ethereum to hold your sheet')
         tx = await state.sheetcoinInstance.methods.increaseAllowance(state.sheetcoinControllerInstance._address, difference).send({
           from: state.account
         })

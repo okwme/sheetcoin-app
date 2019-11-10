@@ -66,6 +66,7 @@ export default {
             var params = JSON.parse(JSON.stringify(this.$route.query))
             await this.relayAction(params)
             this.done = true
+            window.close();
         } catch(error) {
             console.log(error)
             this.error = error.message
