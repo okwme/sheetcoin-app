@@ -55,7 +55,28 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    async relayAction({commit, state, dispatch}, {toAddress, sequence, amount, signature}) {
+      commit('updateLoading', true)
+      commit('updateLoadingMsg', 'Relaying your withdrawal to Etherum')
+      try {
+        tx = await state.sheetcoinControllerInstance.methods.withdraw(sequence, toAddress, amount.toString(10), signature).send({
+          from: state.account
+        })
+        receipt = await getTransactionReceiptMined(tx.transactionHash, 100)
+      } catch (error) {
+        commit('updateLoading', false)
+        commit('updateLoadingMsg', null)
+        console.log({error})
+        throw error
+      }
+      commit('updateLoading', false)
+      commit('updateLoadingMsg', null)
 
+      console.log({tx})
+      console.log({receipt})
+      await dispatch('getAllowed')
+      await dispatch('getEthBalance')
+    },
     async depositAction({state, dispatch, commit}, {deposit, email}) {
       deposit = parseInt(deposit)
       console.log(deposit, state.allowed)
