@@ -58,6 +58,7 @@ export default new Vuex.Store({
     async relayAction({commit, state, dispatch}, {toAddress, sequence, amount, signature}) {
       commit('updateLoading', true)
       commit('updateLoadingMsg', 'Relaying your withdrawal to Etherum')
+      var tx, receipt
       try {
         tx = await state.sheetcoinControllerInstance.methods.withdraw(sequence, toAddress, amount.toString(10), signature).send({
           from: state.account
