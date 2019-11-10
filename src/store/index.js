@@ -65,23 +65,25 @@ export default new Vuex.Store({
         console.log({difference})
         console.log(state.account)
         console.log(state.sheetcoinControllerInstance, state.sheetcoinControllerInstance._address)
+
+        commit('updateLoading', true)
+        commit('updateLoadingMsg', 'Enabling Sheetcoin to hold your sheet')
         tx = await state.sheetcoinInstance.methods.increaseAllowance(state.sheetcoinControllerInstance._address, difference).send({
           from: state.account
         })
         console.log({tx})
-        commit('updateLoading', true)
-        commit('updateLoadingMsg', 'Enabling Sheetcoin to hold your sheet')
         receipt = await getTransactionReceiptMined(tx.transactionHash, 100)
         commit('updateLoading', false)
         commit('updateLoadingMsg', null)
       }
       console.log({deposit, email})
-      tx = await state.sheetcoinControllerInstance.methods.deposit(deposit.toString(10), email).send({
-        from: state.account
-      })
+
 
       commit('updateLoading', true)
       commit('updateLoadingMsg', 'Moving your Sheetcoin to Google Sheets')
+      tx = await state.sheetcoinControllerInstance.methods.deposit(deposit.toString(10), email).send({
+        from: state.account
+      })
       receipt = await getTransactionReceiptMined(tx.transactionHash, 100)
       commit('updateLoading', false)
       commit('updateLoadingMsg', null)

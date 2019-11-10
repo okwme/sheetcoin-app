@@ -20,6 +20,9 @@
       </div>
     </div>
     <hr> -->
+    <div id="loading" v-if="loading" >
+      {{loadingMsg}}
+    </div>
     <router-view/>
   </div>
 </template>
@@ -39,12 +42,23 @@ export default {
     }
   },
   computed: {
-    ...mapState(['connected', 'ethBalance', 'googleBalance', 'ethBalanceLoading', 'sheetBalanceLoading'])
+    ...mapState(['loading', 'loadingMsg', 'connected', 'ethBalance', 'googleBalance', 'ethBalanceLoading', 'sheetBalanceLoading'])
   }
 }
   </script>
 
 <style>
+#loading {
+  position: fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background-color: rgba(0,0,0,0.5);
+  color: white;
+  line-height:100vh;
+  font-size: 2em;
+}
 .flex {
   display: flex;
   justify-content: space-evenly;

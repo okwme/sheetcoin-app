@@ -34,6 +34,7 @@ export function splitToken(token) {
 
 export function parseToken(token) {
     const [header, payload, signature] = splitToken(token);
+    console.log({signature})
     return {
         header: JSON.parse(atob(header)),
         payload: JSON.parse(atob(payload)),
@@ -50,7 +51,15 @@ export function tokenForRecovery(token) {
     }
 }
 
-export function isHex(h) {
-    var a = parseInt(h,16);
-    return (a.toString(16) === h)
-    }
+export function isHex(address) {
+// check if it has the basic requirements of an address
+if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
+    return false;
+    // If it's ALL lowercase or ALL upppercase
+} else if (/^(0x|0X)?[0-9A-Fa-f]{40}$/.test(address)) {
+    return true;
+    // Otherwise check each case
+} else {
+    return false;
+}
+}

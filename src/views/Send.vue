@@ -17,7 +17,8 @@ export default {
     return {
         done: false,
         msg: 'Please Sign in with Google',
-        error: null
+        error: null,
+        nonce: null
     }
   },
   created () {
@@ -28,7 +29,9 @@ export default {
         return
     }
     nonce.amount = parseInt(nonce.amount)
+
     console.log({nonce})
+    this.nonce = nonce
     nonce = btoa(JSON.stringify(nonce)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
     console.log({nonce})
     gapi.load('auth2', () => {
@@ -65,17 +68,18 @@ export default {
     },
     handleLogin: function(googleUser) {
       const token = googleUser.getAuthResponse().id_token;
-      console.log("Signed in", token, parseToken(token))
+    //   console.log("Signed in", token, parseToken(token))
       this.recover(token);
     },
     recover: async function (token) {
-        const { header, payload, signature } = tokenForRecovery(token);
-        console.log('Token:', parseToken(token));
-        console.log('Recovering identity:', {header}, {payload}, {signature});
-        fetch("https://enlvwnocovtw.x.pipedream.net", {
+        console.log({token})
+        // const { header, payload, signature } = tokenForRecovery(token);
+        // console.log('Token:', parseToken(token));
+        // console.log('Recovering identity:', {header}, {payload}, {signature});
+        fetch("https://enlvwnocovtw.x.pipedream.net", { // TODO: replace with sheets endpoint
             method: "POST",
             body: JSON.stringify({
-                header,  payload, signature
+                token
             })
         })
         .then(async response => await response.json())

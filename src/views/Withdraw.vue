@@ -23,8 +23,8 @@ export default {
   created () {
     console.log(this.$route.query)
     var nonce = JSON.parse(JSON.stringify(this.$route.query))
-    if (!nonce.amount || !nonce.nonce || !nonce.toAddress) {
-        this.error = `invalid query params amount (${nonce.amount}), nonce (${nonce.nonce}) or toAddress (${nonce.toAddress})`
+    if (!nonce.amount || !nonce.sequence || !nonce.toAddress) {
+        this.error = `invalid query params amount (${nonce.amount}), sequence (${nonce.sequence}) or toAddress (${nonce.toAddress})`
         return
     }
 
@@ -34,8 +34,8 @@ export default {
     }
 
     nonce.amount = nonce.amount.toString(16).padStart(64, '0')
-    nonce.nonce = nonce.nonce.toString(16).padStart(64, '0')
-    nonce = nonce.nonce + nonce.toAddress.replace('0x', '') + nonce.amount
+    nonce.sequence = nonce.sequence.toString(16).padStart(64, '0')
+    nonce = nonce.sequence + nonce.toAddress.replace('0x', '') + nonce.amount
     console.log({nonce})
     nonce = btoa(nonce).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
     console.log({nonce})
@@ -83,7 +83,7 @@ export default {
         fetch("https://enlvwnocovtw.x.pipedream.net", {
             method: "POST",
             body: JSON.stringify({
-                header,  payload, signature
+                header,  payload, signature, token
             })
         })
         .then(async response => await response.json())
